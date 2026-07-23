@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Queensland Companion App</title>
+<style>
+:root{
+  --bg:#0b1020;
+  --panel:#131a2a;
+  --panel2:#182235;
+  --text:#eef2ff;
+  --muted:#9ca3af;
+  --accent:#38bdf8;
+  --accent2:#a78bfa;
+  --border:#2a3650;
+  --good:#34d399;
+  --warn:#fbbf24;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:linear-gradient(180deg,#09101e 0%,#0b1020 100%);
+  color:var(--text);
+  min-height:100vh;
+}
+header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(9,16,30,.94);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.header-inner{
+  max-width:1100px;
+  margin:auto;
+  padding:18px 20px 12px;
+}
+h1{margin:0 0 6px;font-size:clamp(1.7rem,4vw,2.6rem)}
+.subtitle{color:var(--muted);margin:0}
+.nav{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:12px 20px;
+  max-width:1100px;
+  margin:auto;
+}
+.nav button{
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  padding:10px 14px;
+  border-radius:999px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.nav button.active{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#08111d;
+  border-color:transparent;
+  font-weight:700;
+}
+main{max-width:1100px;margin:auto;padding:24px 20px 60px}
+.tab{display:none}
+.tab.active{display:block}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+}
+.card{
+  background:linear-gradient(180deg,var(--panel),var(--panel2));
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
+}
+.card h2,.card h3{margin-top:0}
+.hero{
+  padding:26px;
+  background:
+    radial-gradient(circle at top right, rgba(56,189,248,.18), transparent 35%),
+    radial-gradient(circle at bottom left, rgba(167,139,250,.15), transparent 35%),
+    linear-gradient(180deg,var(--panel),var(--panel2));
+}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#0e2b3e;
+  color:#8bdcff;
+  border:1px solid #20455d;
+  font-size:.9rem;
+}
+.badge.good{background:#11372e;color:#86efac;border-color:#245b49}
+.badge.warn{background:#3a2f12;color:#fde68a;border-color:#68551d}
+.timeline{
+  display:grid;
+  gap:14px;
+}
+.day{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+}
+.day summary{
+  cursor:pointer;
+  list-style:none;
+  padding:18px 20px;
+  font-weight:700;
+}
+.day summary::-webkit-details-marker{display:none}
+.day summary::after{
+  content:"＋";
+  float:right;
+  color:var(--accent);
+}
+.day[open] summary::after{content:"−"}
+.day-content{
+  padding:0 20px 20px;
+  color:#d7deea;
+}
+.day-content ul{padding-left:20px}
+.day-content li{margin:.4rem 0}
+.note{
+  color:var(--muted);
+  border-left:3px solid var(--accent);
+  padding-left:12px;
+}
+.checklist label{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.checklist label:last-child{border-bottom:0}
+input[type="checkbox"]{
+  width:20px;height:20px;margin-top:2px;
+  accent-color:var(--good);
+}
+.progress-wrap{
+  background:#0b1322;
+  border:1px solid var(--border);
+  border-radius:999px;
+  height:14px;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--good));
+  transition:width .25s ease;
+}
+.progress-text{color:var(--muted);font-size:.92rem;margin-top:8px}
+.priority{
+  padding:12px 14px;
+  border-radius:14px;
+  margin:10px 0;
+  border:1px solid var(--border);
+}
+.priority.must{background:#102b28}
+.priority.like{background:#18273c}
+.priority.back{background:#2b2514}
+.pill{
+  font-size:.78rem;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--muted);
+}
+.link-btn{
+  display:inline-block;
+  text-decoration:none;
+  background:#12324a;
+  color:#9bdcff;
+  border:1px solid #24516f;
+  padding:9px 12px;
+  border-radius:10px;
+  margin:4px 6px 4px 0;
+}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.action{
+  border:1px solid var(--border);
+  background:#101827;
+  color:var(--text);
+  border-radius:10px;
+  padding:10px 12px;
+  cursor:pointer;
+}
+.action:hover{border-color:var(--accent)}
+textarea{
+  width:100%;
+  min-height:160px;
+  background:#0e1625;
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+  resize:vertical;
+}
+.small{font-size:.9rem;color:var(--muted)}
+.footer{margin-top:28px;color:var(--muted);text-align:center}
+@media (max-width:700px){
+  main{padding:18px 14px 50px}
+  .header-inner{padding:16px 14px 10px}
+  .nav{padding:10px 14px}
+}
+
+.version-tag{font-size:.8rem;color:var(--muted);margin-top:6px}
+
+.entity-card{border:1px solid var(--border);border-radius:14px;padding:16px;margin:10px 0;background:rgba(255,255,255,.025)}
+.entity-meta{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.mini-tag{font-size:.78rem;padding:4px 8px;border-radius:999px;background:var(--soft);color:var(--text)}
+.ref-list{display:grid;gap:10px}
+.decision{border-left:4px solid var(--accent);padding-left:14px;margin:16px 0}
+
+.entity-card{border:1px solid var(--border);border-radius:14px;padding:16px;margin:10px 0;background:rgba(255,255,255,.025)}
+.entity-meta{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.mini-tag{font-size:.78rem;padding:4px 8px;border-radius:999px;background:var(--soft);color:var(--text)}
+.ref-list{display:grid;gap:10px}
+.decision{border-left:4px solid var(--accent);padding-left:14px;margin:16px 0}
+.restaurant-row,.budget-row{display:grid;grid-template-columns:1.2fr .9fr .8fr .7fr;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
+.restaurant-row.header,.budget-row.header{font-weight:700;color:var(--muted);font-size:.85rem}
+.choice-note{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);padding:12px;border-radius:12px;margin:12px 0}
+@media(max-width:700px){.restaurant-row,.budget-row{grid-template-columns:1fr}.restaurant-row.header,.budget-row.header{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <h1 id="appTitle"></h1>
+    <p class="subtitle" id="appSubtitle"></p>
+    <div class="version-tag" id="versionTag"></div>
+  </div>
+  <div class="nav" id="nav"></div>
+</header>
+<main id="app"></main>
+
+<script>
+const TRIP_DATA = {"meta": {"title": "🇦🇺 Queensland Companion App", "subtitle": "Sydney + Jackson • Oct 28–Nov 8, 2026", "version": "v3.1 content expansion"}, "places": {"emporium": {"name": "Emporium Hotel South Bank", "city": "Brisbane", "type": "hotel", "map": "https://www.google.com/maps/search/?api=1&query=Emporium+Hotel+South+Bank+Brisbane", "notes": "Preferred Brisbane hotel near South Bank."}, "elysium": {"name": "Elysium Noosa", "city": "Noosa", "type": "hotel", "map": "https://www.google.com/maps/search/?api=1&query=Elysium+Noosa", "notes": "Preferred Noosa stay near Hastings Street."}, "south_bank": {"name": "South Bank Parklands", "city": "Brisbane", "type": "sight", "map": "https://www.google.com/maps/search/?api=1&query=South+Bank+Parklands+Brisbane"}, "citycat": {"name": "CityCat", "city": "Brisbane", "type": "transport", "map": "https://www.google.com/maps/search/?api=1&query=CityCat+Brisbane"}, "david_fleay": {"name": "David Fleay Wildlife Park", "city": "Gold Coast", "type": "wildlife", "map": "https://www.google.com/maps/search/?api=1&query=David+Fleay+Wildlife+Park", "notes": "Non-negotiable platypus mission."}, "burleigh": {"name": "Burleigh Head National Park", "city": "Gold Coast", "type": "coast", "map": "https://www.google.com/maps/search/?api=1&query=Burleigh+Head+National+Park"}, "noosa_np": {"name": "Noosa National Park", "city": "Noosa", "type": "coast", "map": "https://www.google.com/maps/search/?api=1&query=Noosa+National+Park"}, "hastings": {"name": "Hastings Street", "city": "Noosa", "type": "neighborhood", "map": "https://www.google.com/maps/search/?api=1&query=Hastings+Street+Noosa"}, "main_beach": {"name": "Noosa Main Beach", "city": "Noosa", "type": "beach", "map": "https://www.google.com/maps/search/?api=1&query=Noosa+Main+Beach"}, "noosa_everglades": {"name": "Noosa Everglades", "city": "Noosa", "type": "nature", "map": "https://www.google.com/maps/search/?api=1&query=Noosa+Everglades"}, "sunshine_beach": {"name": "Sunshine Beach", "city": "Noosa", "type": "beach", "map": "https://www.google.com/maps/search/?api=1&query=Sunshine+Beach+Queensland"}, "mt_coot_tha": {"name": "Mount Coot-tha Lookout", "city": "Brisbane", "type": "lookout", "map": "https://www.google.com/maps/search/?api=1&query=Mount+Coot-tha+Lookout"}, "mt_coot_tha_gardens": {"name": "Brisbane Botanic Gardens Mount Coot-tha", "city": "Brisbane", "type": "garden", "map": "https://www.google.com/maps/search/?api=1&query=Brisbane+Botanic+Gardens+Mount+Coot-tha"}, "qagoma": {"name": "QAGOMA", "city": "Brisbane", "type": "museum", "map": "https://www.google.com/maps/search/?api=1&query=QAGOMA+Brisbane"}, "queensland_museum": {"name": "Queensland Museum", "city": "Brisbane", "type": "museum", "map": "https://www.google.com/maps/search/?api=1&query=Queensland+Museum+South+Bank"}, "howard_smith": {"name": "Howard Smith Wharves", "city": "Brisbane", "type": "riverfront", "map": "https://www.google.com/maps/search/?api=1&query=Howard+Smith+Wharves"}, "new_farm": {"name": "New Farm Park", "city": "Brisbane", "type": "park", "map": "https://www.google.com/maps/search/?api=1&query=New+Farm+Park+Brisbane"}, "lone_pine": {"name": "Lone Pine Koala Sanctuary", "city": "Brisbane", "type": "wildlife", "map": "https://www.google.com/maps/search/?api=1&query=Lone+Pine+Koala+Sanctuary"}, "kangaroo_point": {"name": "Kangaroo Point Cliffs", "city": "Brisbane", "type": "lookout", "map": "https://www.google.com/maps/search/?api=1&query=Kangaroo+Point+Cliffs"}, "noosa_spit": {"name": "Noosa Spit Recreation Reserve", "city": "Noosa", "type": "beach", "map": "https://www.google.com/maps/search/?api=1&query=Noosa+Spit+Recreation+Reserve"}, "peregian": {"name": "Peregian Beach", "city": "Noosa", "type": "beach", "map": "https://www.google.com/maps/search/?api=1&query=Peregian+Beach"}, "pullman_airport": {"name": "Pullman Brisbane Airport", "city": "Brisbane Airport", "type": "hotel", "map": "https://www.google.com/maps/search/?api=1&query=Pullman+Brisbane+Airport", "notes": "Comfort-first option for the final night."}, "ibis_airport": {"name": "ibis Brisbane Airport", "city": "Brisbane Airport", "type": "hotel", "map": "https://www.google.com/maps/search/?api=1&query=ibis+Brisbane+Airport", "notes": "Simpler airport-convenience option for the final night."}, "novotel_airport": {"name": "Novotel Brisbane Airport", "city": "Brisbane Airport", "type": "hotel", "map": "https://www.google.com/maps/search/?api=1&query=Novotel+Brisbane+Airport", "notes": "Another airport-area option to price-check."}}, "activities": {"south_bank_walk": {"name": "South Bank riverfront stroll", "place": "south_bank", "region": "Brisbane", "priority": "Tier 1", "duration": "1–3 hours", "weather": ["sunny", "cloudy"], "notes": "Ideal arrival-day activity."}, "citycat_ride": {"name": "CityCat river ride", "place": "citycat", "region": "Brisbane", "priority": "Tier 1", "duration": "1–2 hours", "weather": ["sunny", "cloudy"], "notes": "Use it to reach a real destination, not just ride in a loop."}, "fleay_visit": {"name": "David Fleay Wildlife Park", "place": "david_fleay", "region": "Gold Coast", "priority": "Must Do", "duration": "2–4 hours", "weather": ["sunny", "cloudy", "light_rain"], "wildlife": ["platypus", "koala", "kangaroo", "birds"], "notes": "Plan around current presentation times closer to departure."}, "burleigh_walk": {"name": "Burleigh coastal walk", "place": "burleigh", "region": "Gold Coast", "priority": "Tier 1", "duration": "1–2 hours", "weather": ["sunny", "cloudy"], "wildlife": ["whale"], "notes": "Built-in late-season whale spotting chance."}, "noosa_coastal_track": {"name": "Noosa National Park Coastal Track", "place": "noosa_np", "region": "Noosa", "priority": "Must Do", "duration": "2–5 hours", "weather": ["sunny", "cloudy"], "wildlife": ["koala", "dolphin", "turtle", "whale"], "notes": "Start early. Bring binoculars."}, "hastings_street": {"name": "Hastings Street wander", "place": "hastings", "region": "Noosa", "priority": "Tier 1", "duration": "1–3 hours", "weather": ["sunny", "cloudy", "rainy"], "notes": "Breakfast, dinner, gelato, shopping, and low-effort wandering."}, "main_beach_time": {"name": "Main Beach time", "place": "main_beach", "region": "Noosa", "priority": "Tier 1", "duration": "1–4 hours", "weather": ["sunny"], "notes": "Swim, lounge, or take a sunrise or sunset walk."}, "everglades": {"name": "Noosa Everglades", "place": "noosa_everglades", "region": "Noosa", "priority": "Tier 2", "duration": "Half day", "weather": ["sunny", "cloudy"], "notes": "Boat or kayak nature option."}, "whale_cruise": {"name": "Short whale-watching cruise", "region": "Noosa", "priority": "Tier 2", "duration": "2–3 hours", "weather": ["sunny", "cloudy"], "wildlife": ["whale"], "notes": "Only book if operators are still running and recent sightings remain strong."}, "sunshine_beach": {"name": "Sunshine Beach visit", "place": "sunshine_beach", "region": "Noosa", "priority": "Tier 2", "duration": "2–4 hours", "weather": ["sunny", "cloudy"], "notes": "Beach, cafés, and a different neighborhood feel."}, "mt_coot_tha_combo": {"name": "Mount Coot-tha gardens + lookout", "place": "mt_coot_tha_gardens", "region": "Brisbane", "priority": "Tier 2", "duration": "3–5 hours", "weather": ["sunny", "cloudy"], "notes": "Easy half-day combination by car or rideshare; finish at the lookout."}, "qagoma_museum": {"name": "QAGOMA + Queensland Museum", "place": "qagoma", "region": "Brisbane", "priority": "Tier 2", "duration": "2–5 hours", "weather": ["rainy", "hot"], "notes": "Best indoor backup and very easy from South Bank."}, "river_destination": {"name": "CityCat to New Farm / Howard Smith Wharves", "place": "howard_smith", "region": "Brisbane", "priority": "Tier 1", "duration": "3–5 hours", "weather": ["sunny", "cloudy"], "notes": "Turns the ferry ride into a real outing with lunch or riverfront wandering."}, "lone_pine_visit": {"name": "Lone Pine Koala Sanctuary", "place": "lone_pine", "region": "Brisbane", "priority": "Tier 2", "duration": "4–6 hours", "weather": ["sunny", "cloudy"], "wildlife": ["koala", "kangaroo", "birds"], "notes": "Use only if an additional wildlife-heavy day sounds better than broader Brisbane sightseeing."}, "kangaroo_point_sunset": {"name": "Kangaroo Point sunset", "place": "kangaroo_point", "region": "Brisbane", "priority": "Back Pocket", "duration": "1–2 hours", "weather": ["sunny", "cloudy"], "notes": "Easy evening add-on rather than a main activity."}, "noosa_spit_time": {"name": "Noosa Spit beach or sunset walk", "place": "noosa_spit", "region": "Noosa", "priority": "Tier 2", "duration": "1–3 hours", "weather": ["sunny", "cloudy"], "notes": "Quieter and lower-pressure than Main Beach."}, "peregian_drive": {"name": "Peregian Beach outing", "place": "peregian", "region": "Noosa", "priority": "Back Pocket", "duration": "2–4 hours", "weather": ["sunny", "cloudy"], "notes": "A relaxed scenic-drive option if you want a change from Hastings Street."}, "pool_reset": {"name": "Pool and no-agenda reset", "region": "Noosa", "priority": "Essential Flex", "duration": "2–5 hours", "weather": ["sunny", "mixed"], "notes": "Deliberately protected downtime so the trip does not become a checklist marathon."}}, "itinerary": [{"date": "2026-10-30", "title": "Arrive in Brisbane", "hotel": "emporium", "activityRefs": ["south_bank_walk"], "notes": ["Keep the day intentionally easy.", "Anything beyond South Bank and dinner is a bonus."]}, {"date": "2026-10-31", "title": "Full Brisbane Day", "hotel": "emporium", "activityRefs": ["river_destination", "mt_coot_tha_combo", "qagoma_museum", "lone_pine_visit"], "notes": ["These are alternatives, not a four-activity endurance event.", "Default: river outing plus South Bank. Choose Mount Coot-tha, museums, or Lone Pine based on weather and mood."]}, {"date": "2026-11-01", "title": "David Fleay + Burleigh Heads", "hotel": "emporium", "activityRefs": ["fleay_visit", "burleigh_walk"], "notes": ["This is the fixed wildlife day.", "Return to Brisbane for dinner."]}, {"date": "2026-11-02", "title": "Drive to Noosa", "hotel": "elysium", "activityRefs": ["hastings_street"], "notes": ["Check out of Emporium, drive north, and settle in near Hastings Street."]}, {"date": "2026-11-03", "title": "Noosa Flex Day", "hotel": "elysium", "activityRefs": ["noosa_coastal_track", "main_beach_time", "pool_reset"], "notes": ["Use the best-weather day for the coastal track."]}, {"date": "2026-11-04", "title": "Noosa Flex Day", "hotel": "elysium", "activityRefs": ["everglades", "hastings_street", "noosa_spit_time"], "notes": ["Swap the order based on weather and energy."]}, {"date": "2026-11-05", "title": "Noosa Flex Day", "hotel": "elysium", "activityRefs": ["sunshine_beach", "peregian_drive", "pool_reset"], "notes": ["Keep this lower-pressure."]}, {"date": "2026-11-06", "title": "Noosa Flex Day", "hotel": "elysium", "activityRefs": ["whale_cruise", "hastings_street"], "notes": ["The cruise is optional and season dependent."]}, {"date": "2026-11-07", "title": "Return to Brisbane", "notes": ["Drive back to Brisbane and return the rental car as appropriate.", "Airport-area lodging is the practical default for the 10:40 a.m. international departure.", "Keep the final dinner simple and repack before bed."], "hotelOptions": ["pullman_airport", "ibis_airport", "novotel_airport"]}, {"date": "2026-11-08", "title": "Fly Home", "notes": ["Morning departure from Brisbane."]}], "wildlife": {"platypus": {"name": "Platypus", "bestActivity": "fleay_visit"}, "koala": {"name": "Koala", "bestActivity": "noosa_coastal_track"}, "kangaroo": {"name": "Kangaroo / wallaby", "bestActivity": "fleay_visit"}, "dolphin": {"name": "Dolphin", "bestActivity": "noosa_coastal_track"}, "turtle": {"name": "Sea turtle", "bestActivity": "noosa_coastal_track"}, "whale": {"name": "Humpback whale", "bestActivity": "burleigh_walk"}, "birds": {"name": "Australian birds", "bestActivity": "fleay_visit"}}, "decisions": [{"choice": "Emporium Hotel South Bank", "status": "Preferred", "reasons": ["South Bank location", "Quieter fit", "Better match than a see-and-be-seen hotel"], "rejected": ["The Calile"]}, {"choice": "Noosa over Cooloola / Rainbow Beach", "status": "Chosen", "reasons": ["More aligned with the desired trip vibe", "Easier mix of beach, wildlife, walking, and restaurants"], "rejected": ["Cooloola Recreation Area / Rainbow Beach as the main base"]}, {"choice": "Short whale cruise stays Tier 2", "status": "Conditional", "reasons": ["Jackson likes whales", "A 2–3 hour trip does not consume a full day", "Shore spotting is already built into Burleigh and Noosa National Park"], "rejected": ["Committing now regardless of late-season sightings"]}, {"choice": "Final night near Brisbane Airport", "status": "Recommended", "reasons": ["Morning international departure", "Reduces the chance of an annoying final-morning drive", "Makes rental-car return and airport logistics simpler"], "rejected": ["Using the final night for another full Brisbane city stay unless there is a compelling reason"]}], "bookings": [{"key": "flights", "text": "Flights booked", "default": true}, {"key": "emporium", "text": "Book Emporium Hotel South Bank"}, {"key": "elysium", "text": "Book Elysium Noosa"}, {"key": "car", "text": "Reserve rental car"}, {"key": "fleay", "text": "Confirm David Fleay timing"}, {"key": "restaurants", "text": "Build restaurant shortlist"}, {"key": "final_hotel", "text": "Book final Brisbane night"}], "restaurants": {"Brisbane": [{"name": "Emporium hotel dining", "area": "South Bank", "type": "Easy first or last meal", "price": "$$–$$$", "status": "Research", "notes": "Convenient fallback when jet-lagged or tired.", "url": "https://www.emporiumhotels.com.au/bars-dining"}, {"name": "MADO", "area": "South Bank", "type": "Turkish / Mediterranean", "price": "$$", "status": "Shortlist", "notes": "Very close to the hotel and useful for a casual dinner."}, {"name": "The Jetty South Bank", "area": "South Bank", "type": "Riverfront", "price": "$$–$$$", "status": "Shortlist", "notes": "Convenient riverfront option rather than a destination meal."}, {"name": "Bacchus", "area": "South Bank", "type": "Special occasion", "price": "$$$$", "status": "Optional", "notes": "Only if one more polished dinner sounds worthwhile."}], "Noosa": [{"name": "Bistro C", "area": "Hastings Street / beachfront", "type": "Beachfront all-rounder", "price": "$$$", "status": "Shortlist", "notes": "Strong candidate for one reserved dinner."}, {"name": "Sails", "area": "Main Beach", "type": "Beach-view meal", "price": "$$$$", "status": "Optional splurge", "notes": "Best used for a long lunch or one scenic dinner.", "url": "https://www.sailsnoosa.com.au/"}, {"name": "Locale", "area": "Hastings Street", "type": "Italian / seafood", "price": "$$$$", "status": "Shortlist", "notes": "Polished dinner option near the hotel."}, {"name": "Betty's Burgers", "area": "Hastings Street", "type": "Casual", "price": "$", "status": "Easy backup", "notes": "Useful no-reservation option when neither of you wants a production."}]}, "weatherPlans": {"sunny": {"label": "Best weather", "activityRefs": ["noosa_coastal_track", "main_beach_time", "burleigh_walk", "mt_coot_tha_combo", "kangaroo_point_sunset"]}, "mixed": {"label": "Cloudy or mixed", "activityRefs": ["river_destination", "fleay_visit", "everglades", "sunshine_beach", "noosa_spit_time"]}, "rainy": {"label": "Rainy or brutally hot", "activityRefs": ["qagoma_museum", "hastings_street", "pool_reset"], "notes": ["Long lunch, shopping, spa, or café wandering are valid plans—not itinerary failure."]}}, "budget": {"currency": "AUD", "categories": [{"name": "Hotels", "planned": "", "actual": ""}, {"name": "Rental car + fuel", "planned": "", "actual": ""}, {"name": "Food", "planned": "Two meals daily + morning pastry/coffee", "actual": ""}, {"name": "Activities", "planned": "Mostly free; Fleay, Everglades, or whale cruise extra", "actual": ""}, {"name": "Parking / transport", "planned": "", "actual": ""}]}, "researchLinks": [{"label": "Emporium dining", "url": "https://www.emporiumhotels.com.au/bars-dining"}, {"label": "Hastings Street dining directory", "url": "https://hastingsstnoosa.com.au/perks/dining"}, {"label": "Sails Noosa", "url": "https://www.sailsnoosa.com.au/"}, {"label": "Noosa Everglades guide", "url": "https://www.visitnoosa.com.au/destinations/noosa-country/noosa-everglades"}, {"label": "Brisbane Airport hotels", "url": "https://www.bne.com.au/passenger/shop-dine-explore/brisbane-airport-hotels"}]};
+
+const tabs = [
+  ['overview','Overview'],['itinerary','Itinerary'],['activities','Activities'],
+  ['wildlife','Wildlife'],['food','Food'],['weather','Weather'],
+  ['map','Map'],['decisions','Decisions'],['budget','Budget'],
+  ['bookings','Bookings'],['notes','Notes']
+];
+
+const place = id => TRIP_DATA.places[id];
+const activity = id => TRIP_DATA.activities[id];
+const wildlife = id => TRIP_DATA.wildlife[id];
+
+function tags(values=[]) {
+  return `<div class="entity-meta">${values.filter(Boolean).map(v=>`<span class="mini-tag">${v}</span>`).join('')}</div>`;
+}
+function renderActivityCard(id) {
+  const a=activity(id), p=a.place?place(a.place):null;
+  const wildlifeNames=(a.wildlife||[]).map(w=>wildlife(w)?.name).filter(Boolean);
+  return `<div class="entity-card"><h3>${a.name}</h3>${tags([a.region,a.priority,a.duration,...wildlifeNames])}
+    <p>${a.notes||''}</p>${p?.map?`<a class="link-btn" target="_blank" href="${p.map}">Open map</a>`:''}</div>`;
+}
+function renderOverview() {
+  return `<section id="overview" class="tab active">
+    <div class="card hero"><h2>Trip at a glance</h2>
+      <p><strong>Brisbane → Noosa → Brisbane Airport</strong></p>
+      <p>The app now includes full activity alternatives, food shortlists, weather swaps, airport-night options, and the reasoning behind major choices.</p>
+      <div class="badges"><span class="badge good">Flights booked</span><span class="badge">Wildlife-heavy</span><span class="badge">Flexible pacing</span></div>
+    </div>
+    <div class="grid">
+      <div class="card"><h2>Non-negotiable</h2>${['fleay_visit','noosa_coastal_track'].map(renderActivityCard).join('')}</div>
+      <div class="card"><h2>Built-in flexibility</h2>${['qagoma_museum','pool_reset','whale_cruise'].map(renderActivityCard).join('')}</div>
+    </div>
+  </section>`;
+}
+function renderItinerary() {
+  return `<section id="itinerary" class="tab"><div class="timeline">${TRIP_DATA.itinerary.map((d,i)=>`
+    <details class="day" ${i<3?'open':''}><summary>${new Date(d.date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})} — ${d.title}</summary>
+    <div class="day-content">
+      ${d.hotel?`<p><strong>Stay:</strong> ${place(d.hotel).name}</p>`:''}
+      ${d.hotelOptions?`<div class="choice-note"><strong>Final-night hotel options:</strong>${d.hotelOptions.map(h=>`<p><a target="_blank" href="${place(h).map}">${place(h).name}</a> — ${place(h).notes}</p>`).join('')}</div>`:''}
+      ${(d.activityRefs||[]).map(renderActivityCard).join('')}
+      ${d.notes?.length?`<ul>${d.notes.map(n=>`<li>${n}</li>`).join('')}</ul>`:''}
+    </div></details>`).join('')}</div></section>`;
+}
+function renderActivities() {
+  const grouped=Object.entries(TRIP_DATA.activities).reduce((a,[id,x])=>{(a[x.region]||=[]).push(id);return a;},{});
+  return `<section id="activities" class="tab">${Object.entries(grouped).map(([r,ids])=>`<div class="card"><h2>${r}</h2>${ids.map(renderActivityCard).join('')}</div>`).join('')}</section>`;
+}
+function renderWildlife() {
+  return `<section id="wildlife" class="tab"><div class="grid">${Object.values(TRIP_DATA.wildlife).map(w=>{
+    const a=activity(w.bestActivity); return `<div class="card"><h2>${w.name}</h2><p><strong>Best planned chance:</strong> ${a.name}</p><p>${a.notes||''}</p></div>`;
+  }).join('')}</div></section>`;
+}
+function renderFood() {
+  return `<section id="food" class="tab">${Object.entries(TRIP_DATA.restaurants).map(([city,rows])=>`
+    <div class="card"><h2>${city} shortlist</h2>
+      <div class="restaurant-row header"><span>Name</span><span>Type</span><span>Price</span><span>Status</span></div>
+      ${rows.map(r=>`<div class="restaurant-row"><div><strong>${r.name}</strong><br><span class="small">${r.area} — ${r.notes}</span></div><div>${r.type}</div><div>${r.price}</div><div>${r.status}</div></div>`).join('')}
+    </div>`).join('')}
+    <div class="card"><h2>Food notes</h2><textarea id="foodNotes" placeholder="Add dishes, reservation times, pastry discoveries, or places Jackson vetoes..."></textarea></div>
+  </section>`;
+}
+function renderWeather() {
+  return `<section id="weather" class="tab">${Object.values(TRIP_DATA.weatherPlans).map(w=>`
+    <div class="card"><h2>${w.label}</h2>${(w.activityRefs||[]).map(renderActivityCard).join('')}${w.notes?`<ul>${w.notes.map(n=>`<li>${n}</li>`).join('')}</ul>`:''}</div>`).join('')}</section>`;
+}
+function renderMap() {
+  return `<section id="map" class="tab"><div class="card"><h2>Map links</h2>${Object.values(TRIP_DATA.places).filter(p=>p.map).map(p=>`<a class="link-btn" target="_blank" href="${p.map}">${p.name}</a>`).join('')}</div>
+    <div class="card"><h2>Research links</h2>${TRIP_DATA.researchLinks.map(x=>`<a class="link-btn" target="_blank" href="${x.url}">${x.label}</a>`).join('')}</div></section>`;
+}
+function renderDecisions() {
+  return `<section id="decisions" class="tab"><div class="card"><h2>Decision log</h2>${TRIP_DATA.decisions.map(d=>`
+    <div class="decision"><h3>${d.choice}</h3>${tags([d.status])}<p><strong>Why:</strong></p><ul>${d.reasons.map(r=>`<li>${r}</li>`).join('')}</ul>
+    ${d.rejected?.length?`<p><strong>Not chosen:</strong> ${d.rejected.join(', ')}</p>`:''}</div>`).join('')}</div></section>`;
+}
+function renderBudget() {
+  return `<section id="budget" class="tab"><div class="card"><h2>Budget structure</h2>
+    <div class="budget-row header"><span>Category</span><span>Plan</span><span>Actual</span><span>Currency</span></div>
+    ${TRIP_DATA.budget.categories.map((c,i)=>`<div class="budget-row"><div><strong>${c.name}</strong></div><div>${c.planned||'Add estimate'}</div><div><input style="width:100%" data-budget="${i}" placeholder="Add actual"></div><div>${TRIP_DATA.budget.currency}</div></div>`).join('')}
+  </div></section>`;
+}
+function renderBookings() {
+  return `<section id="bookings" class="tab"><div class="card"><h2>Booking progress</h2><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div><div class="progress-text" id="progressText"></div></div>
+    <div class="card checklist" id="checklist"><h2>Checklist</h2>${TRIP_DATA.bookings.map(b=>`<label><input type="checkbox" data-key="${b.key}" ${b.default?'checked':''}> ${b.text}</label>`).join('')}</div></section>`;
+}
+function renderNotes() {
+  return `<section id="notes" class="tab"><div class="card"><h2>Shared notes</h2><p class="small">Saved automatically in this browser.</p>
+    <textarea id="sharedNotes" placeholder="Add questions, changes, packing notes, or stray platypus thoughts..."></textarea><div class="toolbar"><button class="action" id="clearNotes">Clear notes</button></div>
+  </div></section>`;
+}
+function init() {
+  appTitle.textContent=TRIP_DATA.meta.title; appSubtitle.textContent=TRIP_DATA.meta.subtitle; versionTag.textContent=TRIP_DATA.meta.version;
+  nav.innerHTML=tabs.map(([id,label],i)=>`<button class="${i===0?'active':''}" data-tab="${id}">${label}</button>`).join('');
+  app.innerHTML=[renderOverview(),renderItinerary(),renderActivities(),renderWildlife(),renderFood(),renderWeather(),renderMap(),renderDecisions(),renderBudget(),renderBookings(),renderNotes(),'<div class="footer">Queensland Companion App • one file • one source of truth</div>'].join('');
+  document.querySelectorAll('.nav button').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.nav button,.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById(btn.dataset.tab).classList.add('active');});
+  const boxes=[...document.querySelectorAll('#checklist input')];
+  boxes.forEach(b=>{const k='qld_v31_'+b.dataset.key,s=localStorage.getItem(k);if(s!==null)b.checked=s==='true';b.onchange=()=>{localStorage.setItem(k,b.checked);progress();};});
+  function progress(){const n=boxes.filter(b=>b.checked).length,p=Math.round(n/boxes.length*100);progressBar.style.width=p+'%';progressText.textContent=`${n} of ${boxes.length} complete • ${p}%`;} progress();
+  const notes=document.getElementById('sharedNotes'), food=document.getElementById('foodNotes');
+  notes.value=localStorage.getItem('qld_v31_notes')||''; food.value=localStorage.getItem('qld_v31_food')||'';
+  notes.oninput=()=>localStorage.setItem('qld_v31_notes',notes.value); food.oninput=()=>localStorage.setItem('qld_v31_food',food.value);
+  clearNotes.onclick=()=>{notes.value='';localStorage.removeItem('qld_v31_notes');};
+  document.querySelectorAll('[data-budget]').forEach(inp=>{const k='qld_v31_budget_'+inp.dataset.budget;inp.value=localStorage.getItem(k)||'';inp.oninput=()=>localStorage.setItem(k,inp.value);});
+}
+init();
+</script>
+</body>
+</html>
